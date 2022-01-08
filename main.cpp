@@ -1,55 +1,45 @@
 #include <iostream>
 
+#include "grammar.h"
+#include "Token_stream.h"
+
 /* For windows .exe CMD */
 void keep_window_open();
 
-void error(const char *msg) { throw std::runtime_error(msg); }
-
 int main() {
-    int lval = 0, rval = 0;
-    char op;
+    try {
+        double val = 0;
+        while(std::cin) {
+            Token t = ts.get();
 
-    std::cout << "Wpisz wyrazenie (obslugujemy operatory +, -, * oraz /): ";
-    std::cout << "Dodaj x, aby zakonczyc wyrazenie (np. 1+2*3x): ";
-
-    std::cin >> lval;
-    if (!std::cin) error("Na poczatku nie ma argumentu.");
-    /* Read operator and right operand alternately */
-    while (std::cin >> op) {
-        if (op != 'x') {
-            std::cin >> rval;
+            if(t.kind == 'k') {
+                // koniec
+                break;
+            } else if(t.kind == ';') {
+                // print
+                std::cout << "= " << val << std::endl;
+            } else {
+                ts.putback(t);
+            }
+            val = expression();
         }
-        if (!std::cin) error("Nie ma drugiego argumentu wyrazenia.");
-
-        switch (op) {
-            case '+':
-                lval += rval;
-                break;
-            case '-':
-                lval -= rval;
-                break;
-            case '*':
-                lval *= rval;
-                break;
-            case '/':
-                if(rval == 0) {
-                    error("Proba dzielenia przez 0!");
-                }
-                lval /= rval;
-                break;
-            case 'x':
-                std::cout << "Wynik: " << lval << std::endl;
-                keep_window_open();
-                return 0;
-        }
+        keep_window_open();
+    } catch(std::exception &e) {
+        std::cerr << e.what() << std::endl;
+        keep_window_open();
+        return 1;
+    } catch(...) {
+        std::cerr << "Nieznany wyjatek.\n";
+        keep_window_open();
+        return 2;
     }
 
-    error("Nieprawidlowe wyrazenie.");
-    return 1;
+    return 0;
 }
 
 void keep_window_open() {
     while (std::cin.get() != '\n');
 
+    std::cout << "Wprowadz cokolwiek (podtrzymuje okno): ";
     std::cin.get();
 }
