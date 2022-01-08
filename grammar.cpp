@@ -3,6 +3,17 @@
 
 #include <cmath>
 
+static double factorial(double n_d) {
+    long n = static_cast<long>(n_d);
+
+    long result = 1;
+    for(int i = 1; i <= n; i++) {
+        result *= i;
+    }
+
+    return result;
+}
+
 /*
  * Expression:
  *      Term
@@ -31,22 +42,22 @@ double expression() {
 
 /*
  * Term:
- *      Primary
- *      Term "*" Primary
- *      Term "/" Primary
- *      Term "%" Primary
+ *      StrongPrimary
+ *      Term "*" StrongPrimary
+ *      Term "/" StrongPrimary
+ *      Term "%" StrongPrimary
  */
 double term() {
-    double lval = primary();
+    double lval = strong_primary();
     Token t = ts.get();
     while (true) {
         switch (t.kind) {
             case '*':
-                lval *= primary();
+                lval *= strong_primary();
                 t = ts.get();
                 break;
             case '/': {
-                double rval = primary();
+                double rval = strong_primary();
                 if (rval == 0) throw std::runtime_error("Dzielenie przez zero.");
 
                 lval /= rval;
@@ -54,7 +65,7 @@ double term() {
                 break;
             }
             case '%': {
-                double rval = primary();
+                double rval = strong_primary();
                 if (rval == 0) throw std::runtime_error("Dzielenie przez zero.");
 
                 lval = fmod(lval, rval);
@@ -69,9 +80,31 @@ double term() {
 }
 
 /*
+ * StrongPrimary:
+ *      Primary
+ *      StrongPrimary "!"
+ */
+double strong_primary() {
+    double lval = primary();
+    Token t = ts.get();
+    while (true) {
+        switch (t.kind) {
+            case '!':
+                lval = factorial(lval);
+                t = ts.get();
+                break;
+            default:
+                ts.putback(t);
+                return lval;
+        }
+    }
+}
+
+/*
  * Primary:
  *      Number
  *      "(" Expression ")"
+ *      "{" Expression "}"
  */
 double primary() {
     Token t = ts.get();
@@ -81,6 +114,14 @@ double primary() {
 
             t = ts.get();
             if (t.kind != ')') throw std::runtime_error("Oczekiwano ').");
+
+            return expr;
+        }
+        case '{': {
+            double expr = expression();
+
+            t = ts.get();
+            if (t.kind != '}') throw std::runtime_error("Oczekiwano '}'.");
 
             return expr;
         }

@@ -8,17 +8,22 @@
  *      Expression "+" Term
  *      Expression "-" Term
  * Term:
+ *      StrongPrimary
+ *      Term "*" StrongPrimary
+ *      Term "/" StrongPrimary
+ *      Term "%" StrongPrimary
+ * StrongPrimary:
  *      Primary
- *      Term "*" Primary
- *      Term "/" Primary
- *      Term "%" Primary
+ *      StrongPrimary "!"
  * Primary:
  *      Number
  *      "(" Expression ")"
+ *      "{" Expression "}"
  * Number:
  *      floating-point-literal
  */
 
 double expression();
 double term();
+double strong_primary();
 double primary();
