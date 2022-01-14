@@ -10,6 +10,7 @@ int main() {
     try {
         double val = 0;
         while(std::cin) {
+            std::cout << "> ";
             Token t = ts.get();
 
             if(t.kind == 'k') {
