@@ -8,7 +8,7 @@ std::string Token::to_string() const {
     if(kind == NUMBER_KIND) {
         return std::to_string(value);
     } else {
-        return {kind};
+        return std::string(1, kind);
     }
 }
 
