@@ -31,7 +31,7 @@ Token Token_stream::get() {
             return Token(NUMBER_KIND, val);
         }
         default:
-            throw std::runtime_error("Nieprawidlowy token.");
+            throw std::runtime_error("Nieprawidlowy token: " + std::to_string(ch));
     }
 }
 

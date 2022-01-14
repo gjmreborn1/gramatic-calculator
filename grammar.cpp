@@ -128,6 +128,6 @@ double primary() {
         case NUMBER_KIND:
             return t.value;
         default:
-            throw std::runtime_error("Oczekiwano czynnika.");
+            throw std::runtime_error("Oczekiwano czynnika, napotkano: " + t.to_string());
     }
 }
