@@ -7,7 +7,7 @@ static double factorial(double n_d) {
     long n = static_cast<long>(n_d);
 
     long result = 1;
-    for(int i = 1; i <= n; i++) {
+    for (int i = 1; i <= n; i++) {
         result *= i;
     }
 
@@ -105,6 +105,8 @@ double strong_primary() {
  *      Number
  *      "(" Expression ")"
  *      "{" Expression "}"
+ *      "-" Primary
+ *      "+" Primary
  */
 double primary() {
     Token t = ts.get();
@@ -125,6 +127,10 @@ double primary() {
 
             return expr;
         }
+        case '-':
+            return -primary();
+        case '+':
+            return +primary();
         case NUMBER_KIND:
             return t.value;
         default:

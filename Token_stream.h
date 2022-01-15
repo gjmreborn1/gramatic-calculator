@@ -7,6 +7,7 @@ public:
     Token_stream();
     Token get();
     void putback(Token t);
+    void ignore(char ch);
 private:
     Token buffer;
     bool present;

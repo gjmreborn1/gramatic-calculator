@@ -16,8 +16,8 @@ Token Token_stream::get() {
     char ch;
     std::cin >> ch;
     switch(ch) {
-        case ';':
-        case 'k':
+        case QUIT_KIND:
+        case PRINT_KIND:
         case '(': case ')': case '+': case '-': case '*': case '/': case '%':
         case '{': case '}': case '!':
             return Token(ch);
@@ -42,4 +42,19 @@ void Token_stream::putback(Token t) {
 
     buffer = t;
     present = true;
+}
+
+void Token_stream::ignore(char ch) {
+    if(present && buffer.kind == ch) {
+        present = false;
+        return;
+    }
+
+    present = false;
+    char curr;
+    while(std::cin >> curr) {
+        if(curr == ch) {
+            return;
+        }
+    }
 }

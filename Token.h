@@ -3,6 +3,8 @@
 #include <ostream>
 
 const char NUMBER_KIND = '8';
+const char PRINT_KIND = ';';
+const char QUIT_KIND = 'k';
 
 class Token {
 public:

@@ -3,28 +3,20 @@
 #include "grammar.h"
 #include "Token_stream.h"
 
+const std::string prompt = "> ";
+const std::string result = "= ";
+
 /* For windows .exe CMD */
 void keep_window_open();
 
+void calculate();
+
 int main() {
     try {
-        double val = 0;
-        while(std::cin) {
-            std::cout << "> ";
-            Token t = ts.get();
+        calculate();
 
-            if(t.kind == 'k') {
-                // koniec
-                break;
-            } else if(t.kind == ';') {
-                // print
-                std::cout << "= " << val << std::endl;
-            } else {
-                ts.putback(t);
-            }
-            val = expression();
-        }
         keep_window_open();
+        return 0;
     } catch(std::exception &e) {
         std::cerr << e.what() << std::endl;
         keep_window_open();
@@ -34,8 +26,34 @@ int main() {
         keep_window_open();
         return 2;
     }
+}
 
-    return 0;
+void clean_up() {
+    ts.ignore(PRINT_KIND);
+}
+
+void calculate() {
+    while(std::cin) {
+        try {
+            std::cout << prompt;
+            Token t = ts.get();
+
+            // skip all PRINT_KIND
+            while (t.kind == PRINT_KIND) {
+                t = ts.get();
+            }
+
+            if (t.kind == QUIT_KIND) {
+                return;
+            }
+
+            ts.putback(t);
+            std::cout << result << expression() << std::endl;
+        } catch(std::exception &e) {
+            std::cerr << e.what() << std::endl;
+            clean_up();
+        }
+    }
 }
 
 void keep_window_open() {
