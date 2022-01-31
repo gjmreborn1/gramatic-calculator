@@ -39,7 +39,7 @@ Token Token_stream::get() {
                 std::string str_token;
 
                 str_token += ch;
-                while(std::cin.get(ch) && (std::isalpha(ch) || std::isdigit(ch))) {
+                while(std::cin.get(ch) && (std::isalpha(ch) || std::isdigit(ch) || ch == '_')) {
                     str_token += ch;
                 }
                 std::cin.putback(ch);
