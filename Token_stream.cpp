@@ -8,8 +8,11 @@ Token_stream::Token_stream()
 }
 
 static const std::string declkey = "let";
+static const std::string constkey = "const";
 static const std::string sqrtkey = "sqrt";
 static const std::string powkey = "pow";
+static const std::string quitkey = "koniec";
+static const std::string helpkey = "pomoc";
 
 Token Token_stream::get() {
     if(present) {
@@ -20,7 +23,6 @@ Token Token_stream::get() {
     char ch;
     std::cin >> ch;
     switch(ch) {
-        case QUIT_KIND:
         case PRINT_KIND:
         case '(': case ')': case '+': case '-': case '*': case '/': case '%':
         case '{': case '}': case '!': case '=': case ',':
@@ -46,10 +48,16 @@ Token Token_stream::get() {
 
                 if(str_token == declkey) {
                     return Token(LET_KIND);
+                } else if(str_token == constkey) {
+                    return Token(CONST_KIND);
                 } else if(str_token == sqrtkey) {
                     return Token(SQRT_KIND);
                 } else if(str_token == powkey) {
                     return Token(POW_KIND);
+                } else if(str_token == helpkey) {
+                    return Token(HELP_KIND);
+                } else if(str_token == quitkey) {
+                    return Token(QUIT_KIND);
                 } else {
                     return Token(NAME_KIND, str_token);
                 }

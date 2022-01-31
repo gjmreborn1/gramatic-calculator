@@ -1,6 +1,7 @@
 #include "grammar.h"
 #include "Variable.h"
 #include "Token_stream.h"
+#include "Symbol_table.h"
 
 #include <cmath>
 
@@ -50,7 +51,9 @@ double statement() {
     Token t = ts.get();
     switch(t.kind) {
         case LET_KIND:
-            return declaration();
+            return declaration(false);
+        case CONST_KIND:
+            return declaration(true);
         default:
             ts.putback(t);
             return expression();
@@ -125,6 +128,7 @@ double strong_primary() {
  *      "-" Primary
  *      "+" Primary
  *      Name
+ *      Name "=" Expression
  *      "sqrt" "(" Expression ")"
  *      "pow" "(" Expression "," Expression ")"
  */
@@ -153,8 +157,20 @@ double primary() {
             return +primary();
         case NUMBER_KIND:
             return t.value;
-        case NAME_KIND:
-            return get_value(t.name);
+        case NAME_KIND: {
+            std::string var_name = t.name;
+
+            t = ts.get();
+            if(t.kind != '=') {
+                ts.putback(t);
+                return symtab.get(var_name);   // getting the variable value
+            }
+
+            // variable assignment
+            double val = expression();
+            symtab.set(var_name, val);
+            return val;
+        }
         case SQRT_KIND: {
             t = ts.get();
             if (t.kind != '(') throw std::runtime_error("Oczekiwano '('.");

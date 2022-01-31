@@ -7,16 +7,20 @@
  *      Statement
  *      Print
  *      Quit
+ *      Help
  *      Calculation Statement
  * Statement:
  *      Expression
  *      Declaration
  * Declaration:
  *      "let" Name "=" Expression
+ *      "const" Name "=" Expression
  * Print:
  *      ;
  * Quit:
- *      k
+ *      "koniec"
+ * Help:
+ *      "pomoc"
  * Expression:
  *      Term
  *      Expression "+" Term
@@ -36,6 +40,7 @@
  *      "-" Primary
  *      "+" Primary
  *      Name
+ *      Name "=" Expression
  *      "sqrt" "(" Expression ")"
  *      "pow" "(" Expression "," Expression ")"
  * Number:

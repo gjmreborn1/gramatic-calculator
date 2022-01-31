@@ -6,9 +6,11 @@ const char NUMBER_KIND = '8';
 const char PRINT_KIND = ';';
 const char QUIT_KIND = 'k';
 const char LET_KIND = 'L';
+const char CONST_KIND = 'C';
 const char NAME_KIND = 'a';
 const char SQRT_KIND = 's';
 const char POW_KIND = 'p';
+const char HELP_KIND = 'h';
 
 class Token {
 public:

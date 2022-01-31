@@ -2,7 +2,7 @@
 
 #include "grammar.h"
 #include "Token_stream.h"
-#include "Variable.h"
+#include "Symbol_table.h"
 
 const std::string prompt = "> ";
 const std::string result = "= ";
@@ -14,8 +14,8 @@ void calculate();
 
 int main() {
     try {
-        define_name("pi", 3.1415926535);
-        define_name("e", 2.7182818284);
+        symtab.define("pi", 3.1415926535, true);
+        symtab.define("e", 2.7182818284, true);
 
         calculate();
 
@@ -36,6 +36,17 @@ void clean_up() {
     ts.ignore(PRINT_KIND);
 }
 
+void display_help() {
+    std::cout << "Kalkulator. Dostepne polecenia: +, -, *, /, %, !, sqrt(expr), pow(a, b)" << std::endl;
+    std::cout << "Dzialaja nawiasy () i {}." << std::endl;
+    std::cout << "pomoc - pomoc" << std::endl;
+    std::cout << "koniec - zakoncz program" << std::endl;
+    std::cout << "; - wyswietl wynik biezacego wyrazenia" << std::endl;
+    std::cout << "Zmienne definiujemy operatorem let, a stale operatorem const." << std::endl;
+
+    symtab.print();
+}
+
 void calculate() {
     while(std::cin) {
         try {
@@ -51,8 +62,12 @@ void calculate() {
                 return;
             }
 
-            ts.putback(t);
-            std::cout << result << statement() << std::endl;
+            if(t.kind == HELP_KIND) {
+                display_help();
+            } else {
+                ts.putback(t);
+                std::cout << result << statement() << std::endl;
+            }
         } catch(std::exception &e) {
             std::cerr << e.what() << std::endl;
             clean_up();
