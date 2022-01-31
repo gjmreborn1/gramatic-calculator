@@ -2,6 +2,7 @@
 
 #include "grammar.h"
 #include "Token_stream.h"
+#include "Variable.h"
 
 const std::string prompt = "> ";
 const std::string result = "= ";
@@ -13,6 +14,9 @@ void calculate();
 
 int main() {
     try {
+        define_name("pi", 3.1415926535);
+        define_name("e", 2.7182818284);
+
         calculate();
 
         keep_window_open();
@@ -48,7 +52,7 @@ void calculate() {
             }
 
             ts.putback(t);
-            std::cout << result << expression() << std::endl;
+            std::cout << result << statement() << std::endl;
         } catch(std::exception &e) {
             std::cerr << e.what() << std::endl;
             clean_up();

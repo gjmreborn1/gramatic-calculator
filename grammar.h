@@ -3,10 +3,16 @@
 /*
  * Simple grammar of calculator expressions
  *
- * Statement:
- *      Expression
+ * Calculation:
+ *      Statement
  *      Print
  *      Quit
+ *      Calculation Statement
+ * Statement:
+ *      Expression
+ *      Declaration
+ * Declaration:
+ *      "let" Name "=" Expression
  * Print:
  *      ;
  * Quit:
@@ -29,6 +35,9 @@
  *      "{" Expression "}"
  *      "-" Primary
  *      "+" Primary
+ *      Name
+ *      "sqrt" "(" Expression ")"
+ *      "pow" "(" Expression "," Expression ")"
  * Number:
  *      floating-point-literal
  *
@@ -37,6 +46,7 @@
  */
 
 double expression();
+double statement();
 double term();
 double strong_primary();
 double primary();

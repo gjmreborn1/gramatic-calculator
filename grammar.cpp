@@ -1,4 +1,5 @@
 #include "grammar.h"
+#include "Variable.h"
 #include "Token_stream.h"
 
 #include <cmath>
@@ -37,6 +38,22 @@ double expression() {
                 ts.putback(t);
                 return lval;
         }
+    }
+}
+
+/*
+ * Statement:
+ *      Expression
+ *      Declaration
+ */
+double statement() {
+    Token t = ts.get();
+    switch(t.kind) {
+        case LET_KIND:
+            return declaration();
+        default:
+            ts.putback(t);
+            return expression();
     }
 }
 
@@ -107,6 +124,9 @@ double strong_primary() {
  *      "{" Expression "}"
  *      "-" Primary
  *      "+" Primary
+ *      Name
+ *      "sqrt" "(" Expression ")"
+ *      "pow" "(" Expression "," Expression ")"
  */
 double primary() {
     Token t = ts.get();
@@ -133,6 +153,37 @@ double primary() {
             return +primary();
         case NUMBER_KIND:
             return t.value;
+        case NAME_KIND:
+            return get_value(t.name);
+        case SQRT_KIND: {
+            t = ts.get();
+            if (t.kind != '(') throw std::runtime_error("Oczekiwano '('.");
+
+            double expr = expression();
+
+            t = ts.get();
+            if (t.kind != ')') throw std::runtime_error("Oczekiwano ')'.");
+
+            if(expr < 0) throw std::runtime_error("Argument funkcji pierwiastka kwadratowego jest ujemny.");
+
+            return std::sqrt(expr);
+        }
+        case POW_KIND: {
+            t = ts.get();
+            if (t.kind != '(') throw std::runtime_error("Oczekiwano '('.");
+
+            double expr = expression();
+
+            t = ts.get();
+            if (t.kind != ',') throw std::runtime_error("Oczekiwano ','.");
+
+            double expr2 = expression();
+
+            t = ts.get();
+            if (t.kind != ')') throw std::runtime_error("Oczekiwano ')'.");
+
+            return std::pow(expr, static_cast<int>(expr2));
+        }
         default:
             throw std::runtime_error("Oczekiwano czynnika, napotkano: " + t.to_string());
     }
