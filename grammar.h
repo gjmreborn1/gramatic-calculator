@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Token_stream.h"
+
 /*
  * Simple grammar of calculator expressions
  *
@@ -50,8 +52,8 @@
  * Data comes from data_source through stream object ts (Token_stream).
  */
 
-double expression();
-double statement();
-double term();
-double strong_primary();
-double primary();
+double expression(Token_stream &ts);
+double statement(Token_stream &ts);
+double term(Token_stream &ts);
+double strong_primary(Token_stream &ts);
+double primary(Token_stream &ts);

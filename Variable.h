@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Token_stream.h"
+
 #include <string>
 
 class Variable {
@@ -9,4 +11,4 @@ public:
     bool isConst;
 };
 
-double declaration(bool isConst);
+double declaration(Token_stream &ts, bool isConst);

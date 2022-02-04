@@ -22,17 +22,17 @@ static double factorial(double n_d) {
  *      Expression "+" Term
  *      Expression "-" Term
  */
-double expression() {
-    double lval = term();
+double expression(Token_stream &ts) {
+    double lval = term(ts);
     Token t = ts.get();
     while (true) {
         switch (t.kind) {
             case '+':
-                lval += term();
+                lval += term(ts);
                 t = ts.get();
                 break;
             case '-':
-                lval -= term();
+                lval -= term(ts);
                 t = ts.get();
                 break;
             default:
@@ -47,16 +47,16 @@ double expression() {
  *      Expression
  *      Declaration
  */
-double statement() {
+double statement(Token_stream &ts) {
     Token t = ts.get();
     switch(t.kind) {
         case LET_KIND:
-            return declaration(false);
+            return declaration(ts, false);
         case CONST_KIND:
-            return declaration(true);
+            return declaration(ts, true);
         default:
             ts.putback(t);
-            return expression();
+            return expression(ts);
     }
 }
 
@@ -67,17 +67,17 @@ double statement() {
  *      Term "/" StrongPrimary
  *      Term "%" StrongPrimary
  */
-double term() {
-    double lval = strong_primary();
+double term(Token_stream &ts) {
+    double lval = strong_primary(ts);
     Token t = ts.get();
     while (true) {
         switch (t.kind) {
             case '*':
-                lval *= strong_primary();
+                lval *= strong_primary(ts);
                 t = ts.get();
                 break;
             case '/': {
-                double rval = strong_primary();
+                double rval = strong_primary(ts);
                 if (rval == 0) throw std::runtime_error("Dzielenie przez zero.");
 
                 lval /= rval;
@@ -85,7 +85,7 @@ double term() {
                 break;
             }
             case '%': {
-                double rval = strong_primary();
+                double rval = strong_primary(ts);
                 if (rval == 0) throw std::runtime_error("Dzielenie przez zero.");
 
                 lval = fmod(lval, rval);
@@ -104,8 +104,8 @@ double term() {
  *      Primary
  *      StrongPrimary "!"
  */
-double strong_primary() {
-    double lval = primary();
+double strong_primary(Token_stream &ts) {
+    double lval = primary(ts);
     Token t = ts.get();
     while (true) {
         switch (t.kind) {
@@ -132,11 +132,11 @@ double strong_primary() {
  *      "sqrt" "(" Expression ")"
  *      "pow" "(" Expression "," Expression ")"
  */
-double primary() {
+double primary(Token_stream &ts) {
     Token t = ts.get();
     switch (t.kind) {
         case '(': {
-            double expr = expression();
+            double expr = expression(ts);
 
             t = ts.get();
             if (t.kind != ')') throw std::runtime_error("Oczekiwano ').");
@@ -144,7 +144,7 @@ double primary() {
             return expr;
         }
         case '{': {
-            double expr = expression();
+            double expr = expression(ts);
 
             t = ts.get();
             if (t.kind != '}') throw std::runtime_error("Oczekiwano '}'.");
@@ -152,9 +152,9 @@ double primary() {
             return expr;
         }
         case '-':
-            return -primary();
+            return -primary(ts);
         case '+':
-            return +primary();
+            return +primary(ts);
         case NUMBER_KIND:
             return t.value;
         case NAME_KIND: {
@@ -167,7 +167,7 @@ double primary() {
             }
 
             // variable assignment
-            double val = expression();
+            double val = expression(ts);
             symtab.set(var_name, val);
             return val;
         }
@@ -175,7 +175,7 @@ double primary() {
             t = ts.get();
             if (t.kind != '(') throw std::runtime_error("Oczekiwano '('.");
 
-            double expr = expression();
+            double expr = expression(ts);
 
             t = ts.get();
             if (t.kind != ')') throw std::runtime_error("Oczekiwano ')'.");
@@ -188,12 +188,12 @@ double primary() {
             t = ts.get();
             if (t.kind != '(') throw std::runtime_error("Oczekiwano '('.");
 
-            double expr = expression();
+            double expr = expression(ts);
 
             t = ts.get();
             if (t.kind != ',') throw std::runtime_error("Oczekiwano ','.");
 
-            double expr2 = expression();
+            double expr2 = expression(ts);
 
             t = ts.get();
             if (t.kind != ')') throw std::runtime_error("Oczekiwano ')'.");

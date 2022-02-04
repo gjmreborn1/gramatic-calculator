@@ -10,7 +10,7 @@
  *      "let" Name "=" Expression
  *      "const" Name "=" Expression
  */
-double declaration(bool isConst) {
+double declaration(Token_stream &ts, bool isConst) {
     // "let" / "const" is already consumed
 
     Token t = ts.get();
@@ -24,7 +24,7 @@ double declaration(bool isConst) {
         throw std::runtime_error("Brak znaku = w deklaracji zmiennej " + var_name);
     }
 
-    double val = expression();
+    double val = expression(ts);
     symtab.define(var_name, val, isConst);
     return val;
 }

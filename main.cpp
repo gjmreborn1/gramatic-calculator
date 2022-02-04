@@ -66,7 +66,7 @@ void calculate() {
                 display_help();
             } else {
                 ts.putback(t);
-                std::cout << result << statement() << std::endl;
+                std::cout << result << statement(ts) << std::endl;
             }
         } catch(std::exception &e) {
             std::cerr << e.what() << std::endl;
