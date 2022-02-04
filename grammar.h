@@ -47,7 +47,7 @@
  *      floating-point-literal
  *
  *
- * Data comes from std::cin through stream object ts (Token_stream).
+ * Data comes from data_source through stream object ts (Token_stream).
  */
 
 double expression();

@@ -48,7 +48,7 @@ void display_help() {
 }
 
 void calculate() {
-    while(std::cin) {
+    while(ts) {
         try {
             std::cout << prompt;
             Token t = ts.get();

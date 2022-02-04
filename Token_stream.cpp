@@ -1,10 +1,10 @@
 #include <iostream>
 #include "Token_stream.h"
 
-Token_stream ts;
+Token_stream ts {std::cin};
 
-Token_stream::Token_stream()
-    : buffer({}), present(false) {
+Token_stream::Token_stream(std::istream &is)
+    : data_source(is), buffer({}), present(false) {
 }
 
 static const std::string declkey = "let";
@@ -21,7 +21,7 @@ Token Token_stream::get() {
     }
 
     char ch;
-    std::cin >> ch;
+    data_source >> ch;
     switch(ch) {
         case PRINT_KIND:
         case '(': case ')': case '+': case '-': case '*': case '/': case '%':
@@ -30,10 +30,10 @@ Token Token_stream::get() {
         case '.':
         case '0': case '1': case '2': case '3': case '4': case '5': case '6':
         case '7': case '8': case '9': {
-            std::cin.putback(ch);
+            data_source.putback(ch);
 
             double val;
-            std::cin >> val;
+            data_source >> val;
             return Token(NUMBER_KIND, val);
         }
         default:
@@ -41,10 +41,10 @@ Token Token_stream::get() {
                 std::string str_token;
 
                 str_token += ch;
-                while(std::cin.get(ch) && (std::isalpha(ch) || std::isdigit(ch) || ch == '_')) {
+                while(data_source.get(ch) && (std::isalpha(ch) || std::isdigit(ch) || ch == '_')) {
                     str_token += ch;
                 }
-                std::cin.putback(ch);
+                data_source.putback(ch);
 
                 if(str_token == declkey) {
                     return Token(LET_KIND);
@@ -83,9 +83,13 @@ void Token_stream::ignore(char ch) {
 
     present = false;
     char curr;
-    while(std::cin >> curr) {
+    while(data_source >> curr) {
         if(curr == ch) {
             return;
         }
     }
+}
+
+Token_stream::operator bool() const {
+    return (bool) data_source;
 }
